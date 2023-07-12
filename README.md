@@ -2,3 +2,4 @@
 
  - React.js
  - Canvas
+ - CSS Modules

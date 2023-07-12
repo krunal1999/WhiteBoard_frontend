@@ -1,0 +1,35 @@
+.container {
+  position:absolute;
+  top:0;
+  width:350px;
+  left: calc(50% - 175px);
+  border-bottom-left-radius: 50px;
+  border-bottom-right-radius: 50px;
+  background: #eeeeee;
+  height: 60px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+
+.button {
+  width:40px;
+  height:40px;
+  border-radius: 8px;
+  border:none;
+  transition:0.3s ease;
+  background: #fff1dc;
+}
+
+.button:hover, .button:active{
+  background: #e8d5c4;
+}
+
+/* .button_active{
+  width:40px;
+  height:40px;
+  border-radius: 8px;
+  border:none;
+  background: #e8d5c4;
+} */
