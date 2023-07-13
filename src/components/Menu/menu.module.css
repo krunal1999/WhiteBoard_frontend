@@ -1,7 +1,7 @@
 .container {
-  position:absolute;
-  top:0;
-  width:350px;
+  position: absolute;
+  top: 0;
+  width: 350px;
   left: calc(50% - 175px);
   border-bottom-left-radius: 50px;
   border-bottom-right-radius: 50px;
@@ -12,24 +12,23 @@
   align-items: center;
 }
 
-
 .button {
-  width:40px;
-  height:40px;
+  width: 40px;
+  height: 40px;
   border-radius: 8px;
-  border:none;
-  transition:0.3s ease;
+  border: none;
+  transition: 0.3s ease;
   background: #fff1dc;
 }
 
-.button:hover, .button:active{
+.button:hover {
   background: #e8d5c4;
 }
 
-/* .button_active{
-  width:40px;
-  height:40px;
+.button_active {
+  width: 40px;
+  height: 40px;
   border-radius: 8px;
-  border:none;
+  border: none;
   background: #e8d5c4;
-} */
+}
