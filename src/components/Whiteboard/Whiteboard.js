@@ -3,7 +3,13 @@ import Menu from '../Menu/Menu';
 import rough from 'roughjs/bundled/rough.esm';
 import { useDispatch, useSelector } from 'react-redux';
 import { actions, toolTypes } from '../../constants';
-import { createElement, drawElement, updateElement } from '../../utils';
+import {
+  adjustElementsCoordinates,
+  adjustmentIsRequired,
+  createElement,
+  drawElement,
+  updateElement,
+} from '../../utils';
 import { updateElementInStore } from '../../redux/slices/whiteboardSlice';
 
 let selectedElement;
@@ -53,6 +59,33 @@ const Whiteboard = () => {
   };
 
   const handleMouseUp = () => {
+    const selectedElementIndex = elements.findIndex(
+      el => el.id === selectedElement.id,
+    );
+
+    if (selectedElementIndex !== -1) {
+      if (action === actions.DRAWING) {
+        if (adjustmentIsRequired(elements[selectedElementIndex].type)) {
+          const { x1, x2, y1, y2 } = adjustElementsCoordinates(
+            elements[selectedElementIndex],
+          );
+
+          updateElement(
+            {
+              selectedElementIndex,
+              id: selectedElement.id,
+              x1,
+              y1,
+              x2,
+              y2,
+              type: elements[selectedElementIndex].type,
+            },
+            elements,
+          );
+        }
+      }
+    }
+
     setAction(null);
     setSelectedElement(null);
   };
