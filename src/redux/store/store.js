@@ -3,6 +3,13 @@ import whiteboardReducer from '../slices/whiteboardSlice';
 
 export const store = configureStore({
   reducer: {
-    whiteboard:whiteboardReducer
+    whiteboard: whiteboardReducer,
   },
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoreActions: ['whiteboard/setElements'],
+        ignorePaths: ['whiteboard.elements'],
+      },
+    }),
 });
