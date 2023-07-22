@@ -3,9 +3,8 @@ import Menu from '../Menu/Menu';
 import rough from 'roughjs/bundled/rough.esm';
 import { useDispatch, useSelector } from 'react-redux';
 import { actions, toolTypes } from '../../constants';
-import { createElement, updateElement } from '../../utils';
+import { createElement, drawElement, updateElement } from '../../utils';
 import { updateElementInStore } from '../../redux/slices/whiteboardSlice';
-
 
 let selectedElement;
 
@@ -23,9 +22,15 @@ const Whiteboard = () => {
 
   useLayoutEffect(() => {
     const canvas = canvasRef.current;
-    const rc = rough.canvas(canvas);
-    rc.line(80, 700, 300, 0);
-  }, []);
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    const roughCanvas = rough.canvas(canvas);
+
+    elements.forEach(element => {
+      drawElement({ roughCanvas, context: ctx, element });
+    });
+  }, [elements]);
 
   const handleMouseDown = event => {
     // get x, y coordinates where mouse pressed
@@ -60,15 +65,18 @@ const Whiteboard = () => {
       const index = elements.findIndex(el => el.id === selectedElement.id);
 
       if (index !== -1) {
-        updateElement({
-          index,
-          id: elements[index].id,
-          x1: elements[index].x1,
-          y1: elements[index].y1,
-          x2: clientX,
-          y2: clientY,
-          type: elements[index].type,
-        },elements, );
+        updateElement(
+          {
+            index,
+            id: elements[index].id,
+            x1: elements[index].x1,
+            y1: elements[index].y1,
+            x2: clientX,
+            y2: clientY,
+            type: elements[index].type,
+          },
+          elements,
+        );
       }
     }
   };
