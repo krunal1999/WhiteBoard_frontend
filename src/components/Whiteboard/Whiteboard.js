@@ -60,7 +60,7 @@ const Whiteboard = () => {
 
   const handleMouseUp = () => {
     const selectedElementIndex = elements.findIndex(
-      el => el.id === selectedElement.id,
+      el => el.id === selectedElement?.id,
     );
 
     if (selectedElementIndex !== -1) {
