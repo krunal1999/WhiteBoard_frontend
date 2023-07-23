@@ -42,7 +42,7 @@ const Whiteboard = () => {
     // get x, y coordinates where mouse pressed
     const { clientX, clientY } = event;
 
-    if (toolType === toolTypes.RECTANGLE) {
+    if (toolType === toolTypes.RECTANGLE || toolType=== toolTypes.LINE)  {
       setAction(actions.DRAWING);
       const element = createElement({
         x1: clientX,
@@ -74,6 +74,7 @@ const Whiteboard = () => {
             {
               selectedElementIndex,
               id: selectedElement.id,
+              index: selectedElementIndex,
               x1,
               y1,
               x2,
@@ -95,7 +96,7 @@ const Whiteboard = () => {
 
     if (action === actions.DRAWING) {
       // find index of selected element
-      const index = elements.findIndex(el => el.id === selectedElement.id);
+      const index = elements.findIndex(el => el.id === selectedElement?.id);
 
       if (index !== -1) {
         updateElement(
