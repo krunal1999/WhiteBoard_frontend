@@ -42,7 +42,11 @@ const Whiteboard = () => {
     // get x, y coordinates where mouse pressed
     const { clientX, clientY } = event;
 
-    if (toolType === toolTypes.RECTANGLE || toolType=== toolTypes.LINE)  {
+    if (
+      toolType === toolTypes.RECTANGLE ||
+      toolType === toolTypes.LINE ||
+      toolTypes.PENCIL
+    ) {
       setAction(actions.DRAWING);
       const element = createElement({
         x1: clientX,

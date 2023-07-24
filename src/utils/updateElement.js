@@ -28,8 +28,20 @@ export const updateElement = (
       emitElementUpdate(updatedElement);
       break;
     }
+    case toolTypes.PENCIL: {
+      elementsCopy[index] = {
+        ...elementsCopy[index],
+        points: [...elementsCopy[index].points, { x: x2, y: y2 }],
+      };
+      const updatedElement = elementsCopy[index];
+
+      store.dispatch(setElements(elementsCopy));
+
+      emitElementUpdate(updatedElement);
+      break;
+    }
     default: {
-      throw new Error('Something went wrong when updating elements')
+      throw new Error('Something went wrong when updating elements');
     }
   }
 };
