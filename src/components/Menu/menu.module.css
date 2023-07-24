@@ -3,8 +3,8 @@
   top: 0;
   width: 350px;
   left: calc(50% - 175px);
-  border-bottom-left-radius: 50px;
-  border-bottom-right-radius: 50px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
   background: #eeeeee;
   height: 60px;
   display: flex;
