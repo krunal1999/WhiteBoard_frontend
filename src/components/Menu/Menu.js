@@ -5,6 +5,7 @@ import rectangleIcon from '../../assets/images/icons/rectangle.svg';
 import lineIcon from '../../assets/images/icons/line.svg';
 import rubberIcon from '../../assets/images/icons/rubber.svg';
 import pencilIcon from '../../assets/images/icons/pencil.svg';
+import textIcon from '../../assets/images/icons/text.svg';
 import { toolTypes } from '../../constants';
 import { useDispatch, useSelector } from 'react-redux';
 import { setElements, setTootType } from '../../redux/slices/whiteboardSlice';
@@ -21,6 +22,7 @@ const Menu = () => {
     dispatch(setTootType(type));
     dispatch(setElements([]));
     emitClearWhiteBoard();
+    dispatch(setTootType(null));
   };
 
   return (
@@ -47,7 +49,13 @@ const Menu = () => {
         src={pencilIcon}
         type={toolTypes.PENCIL}
         active={tool === toolTypes.PENCIL}
-        handleToolChange={handleClearCanvas}
+        handleToolChange={handleToolChange}
+      />
+      <IconButton
+        src={textIcon}
+        type={toolTypes.TEXT}
+        active={tool === toolTypes.TEXT}
+        handleToolChange={handleToolChange}
       />
     </div>
   );
