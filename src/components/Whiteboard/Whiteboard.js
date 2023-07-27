@@ -2,12 +2,15 @@ import React, { useRef, useLayoutEffect, useState } from 'react';
 import Menu from '../Menu/Menu';
 import rough from 'roughjs/bundled/rough.esm';
 import { useDispatch, useSelector } from 'react-redux';
-import { actions, toolTypes } from '../../constants';
+import { actions, cursorPositions, toolTypes } from '../../constants';
 import {
   adjustElementsCoordinates,
   adjustmentIsRequired,
   createElement,
   drawElement,
+  getCursorForPosition,
+  getElementAtPosition,
+  getResizedCoordinates,
   updateElement,
 } from '../../utils';
 import { updateElementInStore } from '../../redux/slices/whiteboardSlice';
@@ -43,31 +46,58 @@ const Whiteboard = () => {
       return;
     }
 
-    const element = createElement({
-      x1: clientX,
-      y1: clientY,
-      x2: clientX,
-      y2: clientY,
-      toolType,
-      id: crypto.randomUUID(),
-    });
-
     switch (toolType) {
       case toolTypes.RECTANGLE:
       case toolTypes.LINE:
       case toolTypes.PENCIL: {
+        const element = createElement({
+          x1: clientX,
+          y1: clientY,
+          x2: clientX,
+          y2: clientY,
+          toolType,
+          id: crypto.randomUUID(),
+        });
         setAction(actions.DRAWING);
+        setSelectedElement(element);
+        dispatch(updateElementInStore(element));
         break;
       }
       case toolTypes.TEXT: {
+        const element = createElement({
+          x1: clientX,
+          y1: clientY,
+          x2: clientX,
+          y2: clientY,
+          toolType,
+          id: crypto.randomUUID(),
+        });
         setAction(actions.WRITING);
+        setSelectedElement(element);
+        dispatch(updateElementInStore(element));
+        break;
+      }
+      case toolTypes.SELECTION: {
+        const element = getElementAtPosition(clientX, clientY, elements);
+
+        if (element && element.type === toolTypes.RECTANGLE) {
+          setAction(
+            element.position === cursorPositions.INSIDE
+              ? actions.MOVING
+              : actions.RESIZING,
+          );
+
+          const offsetX = clientX - element.x1;
+          const offsetY = clientY - element.y1;
+
+          setSelectedElement({ ...element, offsetX, offsetY });
+        }
+
         break;
       }
       default: {
       }
     }
-    setSelectedElement(element);
-    dispatch(updateElementInStore(element));
   };
 
   const handleMouseUp = () => {
@@ -76,7 +106,7 @@ const Whiteboard = () => {
     );
 
     if (selectedElementIndex !== -1) {
-      if (action === actions.DRAWING) {
+      if (action === actions.DRAWING || action === actions.RESIZING) {
         if (adjustmentIsRequired(elements[selectedElementIndex].type)) {
           const { x1, x2, y1, y2 } = adjustElementsCoordinates(
             elements[selectedElementIndex],
@@ -125,6 +155,73 @@ const Whiteboard = () => {
         );
       }
     }
+
+    if (toolType === toolTypes.SELECTION) {
+      const element = getElementAtPosition(clientX, clientY, elements);
+      event.target.style.cursor = element
+        ? getCursorForPosition(element.position)
+        : 'default';
+    }
+
+    if (
+      toolType === toolTypes.SELECTION &&
+      action === actions.MOVING &&
+      selectedElement
+    ) {
+      const { id, x1, x2, y1, y2, type, offsetX, offsetY } = selectedElement;
+      const width = x2 - x1;
+      const height = y2 - y1;
+
+      const newX1 = clientX - offsetX;
+      const newY1 = clientY - offsetY;
+
+      const index = elements.findIndex(el => el.id === selectedElement.id);
+      if (index !== -1) {
+        updateElement(
+          {
+            id,
+            x1: newX1,
+            y1: newY1,
+            x2: newX1 + width,
+            y2: newY1 + height,
+            type,
+            index,
+          },
+          elements,
+        );
+      }
+    }
+
+    if (
+      toolType === toolTypes.SELECTION &&
+      action === actions.RESIZING &&
+      selectedElement
+    ) {
+      const { id, type, position, ...coordinates } = selectedElement;
+      const { x1, y1, x2, y2 } = getResizedCoordinates(
+        clientX,
+        clientY,
+        position,
+        coordinates,
+      );
+      const selectedElementIndex = elements.findIndex(
+        el => el.id === selectedElement?.id,
+      );
+      if (selectedElementIndex !== -1) {
+        updateElement(
+          {
+            x1,
+            x2,
+            y1,
+            y2,
+            type: selectedElement.type,
+            id: selectedElement.id,
+            index: selectedElementIndex,
+          },
+          elements,
+        );
+      }
+    }
   };
 
   const handleTextAreaBlur = event => {
@@ -133,7 +230,10 @@ const Whiteboard = () => {
     const index = elements.findIndex(el => el.id === selectedElement.id);
 
     if (index !== -1) {
-      updateElement({ id, x1, y1, type, text: event.target.value, index }, elements);
+      updateElement(
+        { id, x1, y1, type, text: event.target.value, index },
+        elements,
+      );
 
       setAction(null);
       setSelectedElement(null);

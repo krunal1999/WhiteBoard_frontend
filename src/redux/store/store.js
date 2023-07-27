@@ -7,9 +7,6 @@ export const store = configureStore({
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
-      serializableCheck: {
-        ignoreActions: ['whiteboard/setElements'],
-        ignorePaths: ['whiteboard.elements'],
-      },
+      serializableCheck: false
     }),
 });
