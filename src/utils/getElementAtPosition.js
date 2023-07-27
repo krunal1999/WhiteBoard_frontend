@@ -45,6 +45,22 @@ const positionWithinElement = (x, y, element) => {
 
       return start || end || on;
     }
+    case toolTypes.PENCIL: {
+      const betweenAnyPoint = element.points.some((point, idx) => {
+        const nextPoint = element.points[idx + 1];
+        if (!nextPoint) return false;
+        return onLine({
+          x1: point.x,
+          y1: point.y,
+          x2: nextPoint.x,
+          y2: nextPoint.y,
+          x,
+          y,
+          maxDistance: 5,
+        });
+      });
+      return betweenAnyPoint ? cursorPositions.INSIDE : null;
+    }
     default: {
     }
   }

@@ -4,6 +4,19 @@ import { store } from '../redux/store/store';
 import { setElements } from '../redux/slices/whiteboardSlice';
 import { emitElementUpdate } from '../socketConnection/socketConnection';
 
+ export function updatePencilElementMoving({ index, newPoints }, elements) {
+  const elementsCopy = [...elements];
+
+  elementsCopy[index] = {
+    ...elements[index],
+    points: newPoints,
+  };
+
+  const updatedPencilElement = elementsCopy[index];
+  store.dispatch(setElements(elementsCopy));
+  emitElementUpdate(updatedPencilElement);
+}
+
 export const updateElement = (
   { id, x1, x2, y1, y2, type, index, text },
   elements,
