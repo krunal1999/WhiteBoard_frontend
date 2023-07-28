@@ -39,10 +39,7 @@ const Whiteboard = () => {
     });
   }, [elements]);
 
-  const handleMouseDown = event => {
-    // get x, y coordinates where mouse pressed
-    const { clientX, clientY } = event;
-
+  const handleMouseDown = (clientX, clientY) => {
     if (selectedElement && action === actions.WRITING) {
       return;
     }
@@ -148,9 +145,7 @@ const Whiteboard = () => {
     setSelectedElement(null);
   };
 
-  const handleMouseMove = event => {
-    const { clientX, clientY } = event;
-
+  const handleMouseMove = (clientX, clientY, event) => {
     if (action === actions.DRAWING) {
       // find index of selected element
       const index = elements.findIndex(el => el.id === selectedElement?.id);
@@ -302,15 +297,16 @@ const Whiteboard = () => {
       )}
       <canvas
         ref={canvasRef}
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
-        onMouseMove={handleMouseMove}
-        onPointerUp={handleMouseUp}
-        onPointerMove={handleMouseMove}
-        onPointerDown={handleMouseDown}
-        // onTouchStart={handleMouseUp}
-        // onTouchMove={handleMouseMove}
-        // onTouchEnd={handleMouseUp}
+        onMouseDown={e => handleMouseDown(e.clientX, e.clientY)}
+        onMouseUp={e => handleMouseUp()}
+        onMouseMove={e => handleMouseMove(e.clientX, e.clientY, e)}
+        onTouchStart={e => {
+          handleMouseDown(e.touches[0].clientX, e.touches[0].clientY, e);
+        }}
+        onTouchMove={e => {
+          handleMouseMove(e.touches[0].clientX, e.touches[0].clientY, e);
+        }}
+        onTouchEnd={e => handleMouseUp()}
         width={window.innerWidth}
         height={window.innerHeight}
         id='canvas'
