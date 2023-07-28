@@ -305,7 +305,10 @@ const Whiteboard = () => {
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}
-        // onTouchStart={() =>}
+        onPointerUp={handleMouseUp}
+        onPointerMove={handleMouseMove}
+        onPointerDown={handleMouseDown}
+        // onTouchStart={handleMouseUp}
         // onTouchMove={handleMouseMove}
         // onTouchEnd={handleMouseUp}
         width={window.innerWidth}
