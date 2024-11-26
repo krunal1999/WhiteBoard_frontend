@@ -2,6 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = { tool: null, elements: [] };
 
+
+
 const whiteboardSlice = createSlice({
   name: 'whiteboard',
   initialState,
@@ -11,6 +13,7 @@ const whiteboardSlice = createSlice({
     },
     updateElementInStore: (state, action) => {
       const { id } = action.payload;
+      console.log(action.payload)
 
       const index = state.elements.findIndex(el => el.id === id);
       if (index === -1) {
@@ -18,14 +21,22 @@ const whiteboardSlice = createSlice({
       } else {
         state.elements[index] = action.payload;
       }
+
+      
     },
     setElements: (state, action) => {
       state.elements = action.payload;
     },
+    clearWhiteboard: (state) => {
+      // state.elements = [];
+      return initialState; 
+    },
+    
   },
 });
 
-export const { setTootType, updateElementInStore, setElements } =
+export const { setTootType, updateElementInStore, setElements, clearWhiteboard } =
   whiteboardSlice.actions;
+
 
 export default whiteboardSlice.reducer;
